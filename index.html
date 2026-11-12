@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Wedding MC</title>
+
+<!-- Edit the settings block below. Everything else can stay as it is. -->
+<script>
+/* =====================================================================
+   YOUR WEDDING SETTINGS
+   Everything the app shows comes from this block. Replace the example
+   couple, venue, times, script and contacts with your own.
+
+   Script lines start with one symbol:
+     >  a line you say out loud (large type)
+     !  a note to yourself (small, between rules)
+     #  a small sub-heading inside a job
+     *  a checklist item (for briefings)
+     ^  Place:|names   a label in bold above names, e.g. guests who travelled
+
+   Times use 24-hour "HH:MM". A job with flex: true starts on a cue rather
+   than a clock time, so it never counts you as running late.
+   ===================================================================== */
+window.WEDDING = {
+  couple: { a: "Sam", b: "Alex" },
+  venue: "Willow Creek Estate",
+  venueLead: "the maître d'",              // who you tell when things slip
+  contactsNote: "Anything not covered, call Chris at the venue",
+  speechesWhen: "About 7:00pm, once the maître d' says tables are clear",
+  speechSlotMinutes: 30,
+  storageKey: "wedding-mc-sam-alex",        // change this for each new wedding
+
+  // The whole day. Add job: "<job id>" to the rows that are yours.
+  schedule: [
+    { time: "10:00", title: "Hair and makeup begins" },
+    { time: "12:00", title: "Photographer arrives with the couple" },
+    { time: "13:30", job: "arrive", title: "You arrive. Find the venue coordinator at the bar" },
+    { time: "14:00", job: "dj", title: "DJ arrives. Meet the DJ and speakers" },
+    { time: "14:30", title: "Guests begin to arrive" },
+    { time: "14:55", job: "ceremony", title: "Move guests to the ceremony, hand over to the celebrant" },
+    { time: "15:00", title: "Ceremony" },
+    { time: "15:30", job: "photo", title: "Congratulate the couple, everyone photo" },
+    { time: "15:45", title: "Canapés and drinks on the lawn" },
+    { time: "16:00", job: "groups", title: "Group photos" },
+    { time: "17:00", job: "reception", title: "Move guests to the reception" },
+    { time: "17:25", job: "house", title: "Guests seated. House rules" },
+    { time: "17:30", job: "entrance", title: "Couple's entrance, welcome, travellers, remembrance" },
+    { time: "17:40", job: "dinner", title: "Dinner is served" },
+    { time: "19:00", job: "speeches", title: "Speeches, once tables are clear" },
+    { time: "19:30", job: "cake", title: "Cake cutting" },
+    { time: "19:35", title: "Dessert" },
+    { time: "20:00", job: "dance", title: "First dance, when the couple are ready" },
+    { time: "21:55", title: "Last song" },
+    { time: "22:30", title: "All guests gone" }
+  ],
+
+  // Your jobs, in order. The Now screen steps through these one at a time.
+  jobs: [
+    { id: "arrive", time: "13:30", title: "Arrive and brief with the venue", when: "1:30pm, at the bar", script: `
+      !Ask for Chris, the venue coordinator.
+      *Bring the run sheet and house rules
+      *Confirm who tells the musicians the couple are ready
+      *Ask where the everyone photo will be
+      *Check speech timing and the 30-minute slot
+      *Microphones: one for you, one for speeches
+      *Ask who the maître d' is tonight` },
+    { id: "dj", time: "14:00", title: "Meet the DJ and speakers", when: "From 2:00pm", script: `
+      *Entrance song and cue
+      *First dance song and cue
+      *Who handles the last song and the close
+      *Speakers: running order, rough lengths, and how to say their names` },
+    { id: "ceremony", time: "14:55", title: "Before the ceremony", when: "On the agreed cue", script: `
+      >Alright everyone, we're nearly ready to get these two married.
+      >If you could all please make your way over to the ceremony area and take a seat.
+      >This is an unplugged ceremony, so please put your phones on silent and away. The photographer has it covered.
+      >Once we're settled, I'll hand over to our celebrant.` },
+    { id: "photo", time: "15:30", title: "Everyone photo", when: "Straight after the ceremony", script: `
+      !Wait for the photographer to confirm where guests should stand.
+      >How good was that? One more big round of applause for our newlyweds!
+      >Before anyone heads to the bar, we're getting a photo with absolutely everyone. Follow the photographer's direction and we'll fit you all in.
+      #After the photo
+      >Thank you, everyone. If you're in one of the smaller group photos, please stay nearby and listen out for your group.
+      >Everyone else, enjoy drinks and canapés on the lawn. We'll start the reception at five.` },
+    { id: "groups", time: "16:00", title: "Group photos", when: "From 4:00pm", photos: true, script: `
+      !Line up the next group while the current one is being shot. Ask a family helper to find faces you don't know.
+      >Next up, could I please have …` },
+    { id: "reception", time: "17:00", title: "Moving to reception", when: "5:00pm", script: `
+      >Alright everyone, it's time to kick off the reception.
+      >Find your table, grab a drink and settle in.
+      !Say it again a few minutes later for the stragglers.` },
+    { id: "house", time: "17:25", title: "House rules", when: "Before the entrance", script: `
+      !Keep it clear and friendly. Save the humour for the entrance and welcome.
+      >For anyone I haven't met yet, I'm Jordan, and I'm looking after you this evening.
+      >Before we welcome these two in, a few housekeeping things from the venue.
+      >The bathrooms are down the hallway to your left. Smoking only in the area by the car park.
+      >No glasses on the dance floor, please. Grab a plastic cup if your drink is coming dancing with you.
+      >If there's an emergency, follow the venue team's instructions.
+      >And if your ride home isn't sorted, please organise that now.
+      >Right. Without further delay…` },
+    { id: "entrance", time: "17:30", title: "Couple's entrance", when: "5:30pm", script: `
+      !Couple ready, photographer in position, DJ has the entrance song cued.
+      >Everyone on your feet! Grab your napkins and wave them in the air, and let's make some noise for our newlyweds…
+      >Sam and Alex!
+      !Step aside and let the music carry them in. Once they're at their table:
+      >Beautiful. Take a seat, everyone.` },
+    { id: "welcome", partOf: "entrance", flex: true, time: "17:32", title: "Personal welcome", when: "Once the couple are seated", script: `
+      !Keep this conversational rather than a separate speech.
+      >I'm Jordan. I've known Sam since university, and I've had the pleasure of getting to know Alex over many dinners since.
+      >It's an honour to be part of today. Thank you both for asking me.
+      >You're surrounded by a pretty special bunch of people, and we're going to have a great night.` },
+    { id: "travel", partOf: "entrance", flex: true, time: "17:34", title: "Guests who travelled", when: "After the welcome", script: `
+      >Some of you have travelled a very long way to be here tonight, and you deserve a special mention.
+      ^From Australia:|Mia, Josh and the kids.
+      ^From Canada:|Priya and Dev.
+      ^And from the UK:|Auntie Jo.
+      >To everyone who travelled, near or far, thank you. It means so much to these two to have you here.
+      >Let's give them a round of applause.` },
+    { id: "remember", partOf: "entrance", flex: true, time: "17:36", title: "Remembrance", when: "After the travellers", script: `
+      !Leave a gentle pause at the end. Don't follow it with a joke.
+      >A day like today brings together so many of the people we love. It also makes us feel the absence of those we wish could be here.
+      >Sam and Alex would like us to remember [names].
+      >Let's take a moment now to hold them in our thoughts.
+      !Pause.
+      >Thank you, everyone.` },
+    { id: "dinner", time: "17:40", title: "Dinner", when: "On the venue's cue", script: `
+      >Dinner is coming shortly. The venue team will let each table know when it's your turn.
+      >Please wait until your table is called. There's more than enough to go around.` },
+    { id: "activities", partOf: "dinner", flex: true, time: "18:15", title: "Guest activities", when: "Any quiet moment during dinner", script: `
+      >A quick reminder to visit the guest book table tonight.
+      >There's an instant camera: take a photo for the album, or take one home as a keepsake.
+      >And leave Sam and Alex a message with your best marriage advice.` },
+    { id: "speeches", time: "19:00", title: "Speeches", when: "Once the maître d' says tables are clear", speeches: true, script: `
+      >Alright everyone, could I get your attention for a moment?
+      >We're going to hear from some of the people who know Sam and Alex best, before the two of them finish with a few words.
+      !Open Speeches for each intro and timer.
+      #After the last speech
+      >One more round of applause for all our speakers.
+      !Tell the maître d' speeches have finished.` },
+    { id: "cake", time: "19:30", title: "Cake cutting", when: "7:30pm, when ready", script: `
+      !Photographer ready first.
+      >Alright everyone, Sam and Alex are going to cut their wedding cake.
+      >Come over for a photo if you like, but leave a bit of room for the photographer.` },
+    { id: "dance", flex: true, time: "20:00", title: "First dance", when: "When the couple give the nod", script: `
+      !Confirm the song and cue with the DJ.
+      >Everyone, come and gather around the dance floor, but leave some room for these two.
+      >Please welcome Sam and Alex for their first dance as a married couple.
+      #That's your last announcement
+      !You're done. Enjoy the night.` }
+  ],
+
+  // Speakers in order, with your introduction for each.
+  speakers: [
+    { id: "parent1", name: "Morgan Lee", role: "Sam's mum", thanks: "Thank you, Morgan.", intro: [
+      "First up is Sam's mum, Morgan, who has been looking forward to this day for a very long time.",
+      "Please give her a warm welcome."] },
+    { id: "parent2", name: "Chris Patel", role: "Alex's dad", thanks: "Thank you, Chris.", intro: [
+      "Next is Alex's dad, Chris. Fair warning, he's been practising this one in the car.",
+      "Please welcome Chris."] },
+    { id: "friend1", name: "Taylor Brooks", role: "Maid of honour", thanks: "Thank you, Taylor.", intro: [
+      "Next is Taylor, Sam's best friend since school and today's maid of honour.",
+      "Please welcome Taylor."] },
+    { id: "friend2", name: "Riley Shaw", role: "Best man", thanks: "Thank you, Riley.", intro: [
+      "Next is Riley, Alex's best man and the person responsible for the stag. We'll leave it there.",
+      "Over to you, mate."] },
+    { id: "couple", name: "Sam and Alex", role: "The couple", thanks: "Thank you both. One more round of applause for all our speakers.", intro: [
+      "And finally, a few words from the two people we're all here for.",
+      "Please welcome Sam and Alex."] }
+  ],
+
+  // Put key: true on the people you'll need most on the night.
+  contacts: [
+    { role: "Venue, your first call", name: "Chris (venue coordinator)", phone: "021 555 0101", key: true },
+    { role: "DJ / music", name: "Casey", phone: "021 555 0102", key: true },
+    { role: "Photographer", name: "Robin", phone: "021 555 0103", key: true },
+    { role: "Celebrant", name: "Pat", phone: "021 555 0104" },
+    { role: "Cake", name: "The cake maker", phone: "021 555 0105" },
+    { role: "Florist", name: "The florist", phone: "021 555 0106" }
+  ],
+
+  // Photo groups in the photographer's order. Each gets a tick box and a notes field.
+  photoGroups: [
+    "Everyone", "Sam's friends", "Alex's friends", "Work friends", "Both families",
+    "Sam's family", "Alex's family", "Wedding party", "Bride & bridesmaids", "Groom & groomsmen"
+  ],
+
+  info: {
+    venueJobs: [
+      ["Keep to the schedule.", "The kitchen works to these timings. If you're running behind, tell the maître d' straight away."],
+      ["Read the house rules", "while guests find their seats, before the couple come in."],
+      ["Make judgement calls,", "like moving guests inside if the weather turns. Check with the venue first."]
+    ],
+    spareLines: [
+      ["Getting attention:", "“Alright everyone, I'll borrow you for thirty seconds.” Then wait."],
+      ["Short delay:", "“We're just getting the next part ready. Enjoy your drinks; I'll bring you back in shortly.”"],
+      ["Emotional speaker:", "“Take your time.”"],
+      ["Mic problem:", "“We'll get that sorted before we carry on.”"],
+      ["Missed joke:", "go straight to the next sentence."]
+    ],
+    houseRules: [
+      ["Bathrooms", "Down the hallway to the left."],
+      ["Smoking", "Only in the area by the car park."],
+      ["Emergency", "Follow the venue team."],
+      ["Dance floor", "No glasses. Plastic cups only."],
+      ["Getting home", "Sort a ride early. Taxis are hard to get late."]
+    ],
+    pronunciations: [
+      ["Siobhan", "shiv-AWN"],
+      ["Niamh", "NEEV"]
+    ],
+    toConfirm: [
+      "Speech lengths, so the 30-minute slot works.",
+      "Who handles the last song and the close."
+    ]
+  }
+};
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+[hidden] { display: none !important; }
+
+/* Layout: Invitation Suite. Centred stationery header (rings, names, clock, tracking) over a single scrolling sheet; Now reads like a printed card with Back / Done pinned at the foot; small-caps tab bar, sidebar in landscape */
+:root {
+  --paper: #f5f3ec;
+  --sheet: #fbfaf5;
+  --ink: #2f3a23;
+  --muted: #6e7860;
+  --line: #cfd4bf;
+  --olive: #5f7a34;
+  --olive-ink: #fbfaf5;
+  --olive-soft: #e9ecdd;
+  --warn: #9a5a1c;
+  --warn-soft: #f3e6d3;
+  --grain: rgba(80, 90, 60, .06);
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --ui: "Instrument Sans", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --say-size: 1.9rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #191c14; --sheet: #20241a; --ink: #ece8da; --muted: #a8ae97; --line: #383e2d;
+    --olive: #b6c78d; --olive-ink: #1b2012; --olive-soft: #2a3120; --warn: #e3a866; --warn-soft: #3a2d1c;
+    --grain: rgba(236, 232, 218, .035); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #191c14; --sheet: #20241a; --ink: #ece8da; --muted: #a8ae97; --line: #383e2d;
+  --olive: #b6c78d; --olive-ink: #1b2012; --olive-soft: #2a3120; --warn: #e3a866; --warn-soft: #3a2d1c;
+  --grain: rgba(236, 232, 218, .035); color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background-color: var(--paper); background-image: radial-gradient(var(--grain) 1px, transparent 1.2px); background-size: 7px 7px;
+  color: var(--ink); font: 400 16px/1.5 var(--ui); -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+}
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--olive); outline-offset: 3px; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.caps { font: 600 .72rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; }
+
+.app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; }
+main { display: flex; flex-direction: column; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; }
+
+/* stationery header */
+.status {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4px 16px;
+  padding-block: 14px 10px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--line);
+}
+.clock { font: 500 2.3rem/1 var(--serif); justify-self: start; }
+.clock small { font: 600 .68rem var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-left: 6px; }
+.crest { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.crest svg { width: 40px; height: 22px; stroke: var(--olive); }
+.names { font: 500 1.05rem/1 var(--serif); letter-spacing: .34em; text-transform: uppercase; margin-right: -.34em; white-space: nowrap; }
+.names i { font-style: italic; letter-spacing: 0; text-transform: none; margin: 0 .5em; color: var(--olive); }
+.pill { justify-self: end; display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border: 1px solid var(--olive); color: var(--olive); border-radius: 999px; font: 600 .7rem var(--ui); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill.late { border-color: var(--warn); color: var(--warn); background: var(--warn-soft); }
+.pill.idle { border-color: var(--line); color: var(--muted); }
+.nextup { grid-column: 1 / -1; display: flex; justify-content: center; align-items: baseline; gap: 10px; min-width: 0; padding-top: 6px; }
+.nextup .lbl { font: 600 .68rem var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); flex: none; }
+.nextup .val { font: italic 500 1.15rem var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.nextup .cd { font: 600 .8rem var(--ui); font-style: normal; color: var(--olive); letter-spacing: .04em; }
+.rehearse-flag { grid-column: 1 / -1; text-align: center; font-size: .8rem; color: var(--warn); font-weight: 600; }
+@media (max-width: 620px) {
+  .status { grid-template-columns: 1fr auto; }
+  .crest { grid-column: 1 / -1; grid-row: 1; }
+  .names { font-size: .9rem; letter-spacing: .24em; margin-right: -.24em; }
+}
+
+.wrap { flex: 1 0 auto; width: 100%; max-width: 860px; margin: 0 auto; align-content: start; padding-block: 28px 48px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 500; }
+h1 { font: italic 500 2.7rem/1.05 var(--serif); }
+h2 { font: italic 500 1.8rem/1.15 var(--serif); }
+h3 { font: 600 .74rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--olive); }
+.eyebrow { font: 600 .72rem/1.4 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.sub { color: var(--muted); margin: 0; }
+.orn { display: flex; align-items: center; gap: 14px; color: var(--olive); font-size: .8rem; width: min(360px, 70%); margin: 0 auto; }
+.orn::before, .orn::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+.centre { text-align: center; justify-items: center; }
+
+/* tabs */
+.tabs {
+  display: flex; justify-content: space-around; border-top: 1px solid var(--line); background: var(--paper);
+  padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px));
+}
+.tabs button { flex: 1; background: none; border: 0; padding: 8px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font: 600 .66rem var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); min-width: 0; position: relative; }
+.tabs button svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.tabs button[aria-current="page"] { color: var(--olive); }
+.tabs button[aria-current="page"]::after { content: ""; position: absolute; top: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--olive); }
+
+/* buttons */
+.btn { border: 1px solid var(--ink); background: transparent; border-radius: 999px; padding: 12px 22px; min-height: 48px; font: 600 .74rem var(--ui); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--olive); border-color: var(--olive); color: var(--olive-ink); }
+.btn.small { min-height: 40px; padding: 6px 14px; font-size: .68rem; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* now: the card */
+.now-head { display: grid; justify-items: center; text-align: center; gap: 10px; position: relative; padding-top: 4px; }
+.now-head .meta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.badge { font: 600 .66rem var(--ui); letter-spacing: .16em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--olive); color: var(--olive); }
+.sizer { display: flex; gap: 6px; justify-content: center; }
+.sizer .btn { border-color: var(--line); color: var(--muted); }
+.script { display: grid; gap: 20px; justify-items: center; text-align: center; padding-bottom: 8px; }
+.say { font: 500 var(--say-size)/1.34 var(--serif); margin: 0; max-width: 30em; }
+.say.place b { display: block; font: 600 .78em/1.2 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--olive); margin-bottom: .15em; }
+.cue { margin: 0; max-width: 34em; font: 400 .98rem/1.5 var(--ui); color: var(--muted); padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.cue b { display: block; font: 600 .64rem var(--ui); letter-spacing: .18em; text-transform: uppercase; color: var(--olive); margin-bottom: 2px; }
+.subh { font: italic 500 1.2rem var(--serif); color: var(--olive); margin-top: 6px; }
+.subh::before, .subh::after { content: "  ~  "; color: var(--line); }
+.dos { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; text-align: left; max-width: 34em; }
+.dos li { font: 500 1.35rem/1.35 var(--serif); padding-left: 30px; position: relative; }
+.dos li::before { content: ""; position: absolute; left: 4px; top: .5em; width: 11px; height: 11px; border: 1.2px solid var(--olive); transform: rotate(45deg); }
+.hint { display: grid; gap: 10px; justify-items: center; text-align: center; padding: 14px 18px; border: 1px solid var(--warn); border-radius: 14px; background: var(--warn-soft); color: var(--warn); font-weight: 600; font-size: .95rem; }
+.hint .btn { border-color: var(--warn); color: var(--warn); }
+#pagerSlot { position: sticky; bottom: 0; z-index: 2; }
+.pager {
+  background: var(--paper); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 14px; align-items: center;
+  padding-block: 12px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.pager .btn { min-height: 62px; min-width: 0; flex-direction: column; gap: 3px; border-radius: 18px; text-transform: none; letter-spacing: 0; }
+.pager .btn span { font: 600 .64rem var(--ui); letter-spacing: .16em; text-transform: uppercase; opacity: .8; }
+.pager .btn b { font: italic 500 1.2rem/1.1 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.pager .back { border-color: var(--line); color: var(--muted); }
+.pager .btn[disabled] { opacity: .35; }
+
+/* printed-card frame for panels */
+.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 4px; outline: 1px solid var(--line); outline-offset: -7px; padding: 24px; display: grid; gap: 12px; }
+
+/* speeches */
+.bar { height: 6px; background: var(--olive-soft); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--olive); border-radius: 99px; width: 0; transition: width .3s; }
+.bar.over i { background: var(--warn); }
+.speaker { background: var(--sheet); border: 1px solid var(--line); border-radius: 4px; outline: 1px solid var(--line); outline-offset: -7px; padding: 24px; display: grid; gap: 14px; justify-items: center; text-align: center; scroll-margin-top: 16px; }
+.speaker.live { border-color: var(--olive); outline-color: var(--olive); }
+.speaker .top { display: grid; justify-items: center; gap: 6px; }
+.speaker .n { font: 600 .66rem var(--ui); letter-spacing: .18em; color: var(--olive); }
+.speaker .name { font: italic 500 1.9rem/1.1 var(--serif); }
+.speaker .role { font: 600 .68rem var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.speaker .timer { font: 500 1.6rem/1 var(--serif); }
+.speaker .intro { display: grid; gap: 10px; max-width: 32em; }
+.speaker .intro p { margin: 0; font: 500 1.45rem/1.4 var(--serif); }
+
+/* run sheet */
+.timeline { margin: 0; padding: 0; list-style: none; display: grid; }
+.tl { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 12px 10px; border-bottom: 1px solid var(--line); }
+.tl .t { font: 500 1.1rem var(--serif); color: var(--muted); }
+.tl .t small { display: block; font: 600 .62rem var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--olive); margin-top: 2px; }
+.tl .body { min-width: 0; display: grid; gap: 2px; }
+.tl.mc .t { color: var(--olive); }
+.tl.mc .title { font-weight: 600; }
+.tl.past { opacity: .5; }
+.tl.current { background: var(--olive-soft); border-radius: 10px; opacity: 1; }
+button.tl { width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); font: inherit; color: inherit; }
+.tag { display: inline-block; font: 600 .6rem var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--olive); border: 1px solid currentColor; border-radius: 999px; padding: 1px 7px; margin-right: 8px; vertical-align: 2px; }
+
+.check { width: 44px; height: 44px; border-radius: 50%; border: 1.2px solid var(--line); background: transparent; display: grid; place-items: center; flex: none; }
+.check svg { width: 20px; height: 20px; stroke: var(--olive-ink); stroke-width: 2.2; fill: none; opacity: 0; }
+.check[aria-pressed="true"] { background: var(--olive); border-color: var(--olive); }
+.check[aria-pressed="true"] svg { opacity: 1; }
+.photo { display: grid; grid-template-columns: 26px 44px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); text-align: left; }
+.photo .pn { font: 600 .74rem var(--ui); letter-spacing: .08em; color: var(--muted); }
+.photo .txt { display: grid; gap: 6px; }
+.photo .pnote { padding: 9px 12px; font-size: .92rem; border-radius: 8px; }
+.photo .arrows { display: grid; gap: 6px; }
+.photo .arrows .x { width: 44px; height: 40px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; letter-spacing: 0; color: var(--ink); }
+.photo .arrows .x[disabled] { opacity: .3; }
+@media (max-width: 560px) { .photo { grid-template-columns: 44px 1fr auto; } .photo .pn { display: none; } }
+.photo .txt { min-width: 0; }
+.photo .txt b { font: 500 1.25rem var(--serif); }
+.photo .txt small { display: block; color: var(--muted); font-size: .85rem; }
+.photo.done .txt b { text-decoration: line-through; color: var(--muted); }
+.x { background: none; border: 0; color: var(--muted); padding: 8px; font: 600 .66rem var(--ui); letter-spacing: .12em; text-transform: uppercase; }
+input[type=text], textarea { width: 100%; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+textarea { min-height: 200px; resize: vertical; font: 500 1.15rem/1.5 var(--serif); }
+.addrow { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+
+/* contacts + info */
+.contact { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.contact:last-child { border-bottom: 0; }
+.contact .r { font: 600 .66rem var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.contact .nm { font: italic 500 1.4rem/1.2 var(--serif); }
+.contact .ph { font-size: 1.1rem; letter-spacing: .04em; user-select: all; -webkit-user-select: all; }
+.contact .acts { display: flex; gap: 8px; }
+.contact.key .nm { color: var(--olive); }
+.rules { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.rules li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; }
+.rules b { font: italic 600 1.1rem var(--serif); }
+.pron { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.pron div { border: 1px solid var(--line); border-radius: 4px; padding: 14px; text-align: center; background: var(--sheet); }
+.pron b { display: block; font: italic 500 1.4rem var(--serif); }
+.pron span { font: 600 .72rem var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--olive); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; align-items: start; }
+.grid2 > * { min-width: 0; }
+.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 10px 16px; font: 600 .68rem var(--ui); letter-spacing: .12em; text-transform: uppercase; }
+.seg button[aria-pressed="true"] { background: var(--olive); color: var(--olive-ink); }
+input[type=range] { width: 100%; accent-color: var(--olive); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 10px 20px; border-radius: 999px; font: 600 .72rem var(--ui); letter-spacing: .12em; text-transform: uppercase; z-index: 10; }
+@media (max-width: 560px) { .rules li { grid-template-columns: 1fr; gap: 2px; } .tl { grid-template-columns: 70px 1fr; } }
+@media (min-width: 1000px) {
+  .app { grid-template-columns: 170px 1fr; grid-template-rows: auto 1fr; }
+  .status { grid-column: 1 / -1; }
+  .tabs { grid-row: 2; grid-column: 1; flex-direction: column; justify-content: flex-start; border-top: 0; border-right: 1px solid var(--line); padding: 20px 12px !important; gap: 6px; }
+  .tabs button { flex: none; flex-direction: row; justify-content: flex-start; gap: 12px; padding: 14px 12px; font-size: .7rem; }
+  .tabs button[aria-current="page"]::after { top: 50%; right: 8px; top: 50%; margin-top: -2.5px; }
+  main { grid-row: 2; grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="status">
+    <div class="clock num" id="clock">--:--<small id="ampm">pm</small></div>
+    <div class="crest">
+      <svg viewBox="0 0 60 34" fill="none" stroke-width="1.5" aria-hidden="true"><ellipse cx="22" cy="20" rx="13" ry="10"/><ellipse cx="38" cy="16" rx="13" ry="10"/><path d="M41 4l3-3 3 3-3 3z"/></svg>
+      <div class="names" id="names"></div>
+    </div>
+    <span class="pill num" id="track">On track</span>
+    <div class="nextup">
+      <span class="lbl">Up next</span>
+      <span class="val" id="nextVal">…</span>
+    </div>
+    <div class="rehearse-flag" id="rehFlag" hidden>Rehearsal clock is on. Turn it off in Info before the day.</div>
+  </header>
+  <main id="main"><div class="wrap" id="view"></div><div id="pagerSlot"></div></main>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  const W = window.WEDDING;
+  const T = (h, m) => h * 60 + m;
+  const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return T(h, m); };
+
+  // ---------- data from the settings block ----------
+  const SCHEDULE = W.schedule.map(s => ({ ...s, t: toMin(s.time) }));
+  const STEPS = W.jobs.map(s => ({ ...s, t: toMin(s.time) }));
+  const SPEAKERS = W.speakers;
+  const CONTACTS = W.contacts;
+  const SLOT = (W.speechSlotMinutes || 30) * 60;
+
+  // ---------- storage (this device only) ----------
+  const KEY = W.storageKey || "wedding-mc";
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { store = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+  store.speech = store.speech || {};
+  store.notes = store.notes || "";
+  store.size = store.size || 1.9;
+  const photoSig = W.photoGroups.join("|");
+  if (store.photoSig !== photoSig || !Array.isArray(store.photos)) {
+    store.photos = W.photoGroups.map(t => ({ t, note: "", done: false }));
+    store.photoSig = photoSig; save();
+  }
+
+  // ---------- header ----------
+  document.title = W.appTitle || (W.couple.a + " & " + W.couple.b + " MC");
+  document.getElementById("names").innerHTML = esc(W.couple.a) + "<i>and</i>" + esc(W.couple.b);
+
+  // ---------- time ----------
+  let offsetMs = 0; // rehearsal clock, never saved
+  const nowDate = () => new Date(Date.now() + offsetMs);
+  const nowMin = () => { const d = nowDate(); return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60; };
+  const fmt = (m) => { m = Math.round(m); let h = Math.floor(m / 60) % 24; const mm = m % 60, ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + ":" + String(mm).padStart(2, "0") + ap; };
+  const fmtDur = (sec) => { sec = Math.max(0, Math.floor(sec)); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60; return h ? h + "h " + String(m).padStart(2, "0") + "m" : m + ":" + String(s).padStart(2, "0"); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  function liveIndex() {
+    const n = nowMin(); let i = 0;
+    STEPS.forEach((s, k) => { if (s.t <= n) i = k; });
+    return i;
+  }
+  if (typeof store.pos !== "number") store.pos = 0;
+  const shownIndex = () => Math.max(0, Math.min(STEPS.length - 1, store.pos));
+  function setPos(i) { store.pos = Math.max(0, Math.min(STEPS.length - 1, i)); save(); }
+  // How far behind: the next timed job's scheduled time has passed but you haven't moved on
+  function tracking() {
+    const n = nowMin(), i = shownIndex(), next = STEPS.slice(i + 1).find(s => !s.flex);
+    if (n < STEPS[0].t) return { state: "before" };
+    if (!next) return { state: "end" };
+    const over = n - next.t;
+    if (over > 120 || n > T(23, 30)) return { state: "idle" }; // clock is nowhere near the event, e.g. practising the night before
+    if (over >= 5) return { state: "late", mins: Math.round(over), next };
+    return { state: "ok" };
+  }
+
+  // ---------- tabs ----------
+  const ICONS = {
+    now: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
+    speeches: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+    run: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    contacts: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'
+  };
+  const TABS = [["now", "Now"], ["speeches", "Speeches"], ["run", "Run sheet"], ["contacts", "Contacts"], ["info", "Info"]];
+  const ids = TABS.map(t => t[0]);
+  let tab = ids.includes(location.hash.slice(1)) ? location.hash.slice(1) : (ids.includes(store.tab) ? store.tab : "now");
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = TABS.map(([id, l]) => `<button type="button" data-tab="${id}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]}</svg><span>${l}</span></button>`).join("");
+  tabsEl.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) go(b.dataset.tab); });
+  function go(t) { tab = t; store.tab = t; save(); render(true); }
+
+  const view = document.getElementById("view"), pagerSlot = document.getElementById("pagerSlot"), main = document.getElementById("main");
+  const checkSvg = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  // Script lines: ">" say, "!" note, "#" sub-heading, "*" to-do, "^" Place:|names
+  function scriptHtml(body) {
+    let out = "", dos = [];
+    const flush = () => { if (dos.length) { out += `<ul class="dos">${dos.join("")}</ul>`; dos = []; } };
+    body.trim().split("\n").map(l => l.trim()).filter(Boolean).forEach(l => {
+      const k = l[0], txt = esc(l.slice(1).trim());
+      if (k === "*") { dos.push(`<li>${txt}</li>`); return; }
+      flush();
+      if (k === ">") out += `<p class="say">${txt}</p>`;
+      else if (k === "^") { const [place, who] = l.slice(1).split("|"); out += `<p class="say place"><b>${esc(place.trim())}</b>${esc((who || "").trim())}</p>`; }
+      else if (k === "!") out += `<p class="cue"><b>Note</b>${txt}</p>`;
+      else if (k === "#") out += `<div class="subh">${txt}</div>`;
+      else out += `<p class="say">${esc(l)}</p>`;
+    });
+    flush();
+    return out;
+  }
+
+  function photosHtml() {
+    const ps = store.photos;
+    return `<div class="card"><div class="row" style="justify-content:space-between"><h3>Photo groups</h3><span class="sub">${ps.filter(p => !p.done).length} of ${ps.length} to go</span></div>
+      ${ps.map((p, i) => `<div class="photo ${p.done ? "done" : ""}">
+        <span class="pn num">${String(i + 1).padStart(2, "0")}</span>
+        <button class="check" type="button" aria-label="Mark ${esc(p.t)} done" aria-pressed="${!!p.done}" data-photo="${i}">${checkSvg}</button>
+        <div class="txt"><b>${esc(p.t)}</b><input type="text" class="pnote" id="pnote-${i}" data-pnote="${i}" value="${esc(p.note || "")}" placeholder="Names to gather / reminder" aria-label="Names to gather for ${esc(p.t)}" autocomplete="off"></div>
+        <div class="arrows"><button class="x" type="button" data-pmove="${i}" aria-label="Move ${esc(p.t)} up" ${i === 0 ? "disabled" : ""}>↑</button><button class="x" type="button" data-pdown="${i}" aria-label="Move ${esc(p.t)} down" ${i === ps.length - 1 ? "disabled" : ""}>↓</button></div>
+      </div>`).join("")}
+      <form class="addrow" id="addPhoto"><input type="text" id="newPhoto" aria-label="New photo group" placeholder="Add an extra group" autocomplete="off"><button class="btn primary" type="submit">Add</button></form></div>`;
+  }
+
+  // ---------- views ----------
+  function renderNow() {
+    const i = shownIndex(), s = STEPS[i];
+    const badge = s.flex ? `<span class="badge">When ready</span>` : "";
+    view.innerHTML = `<div class="now-head">
+        <div class="meta">${badge}<span class="eyebrow">${i + 1} of ${STEPS.length} · ${esc(s.when || fmt(s.t))}</span></div>
+        <h1>${esc(s.title)}</h1>
+        <div class="orn" aria-hidden="true">✦</div></div>
+      <div id="hintSlot"></div>
+      <div class="script">${scriptHtml(s.script || "")}</div>
+      ${s.photos ? photosHtml() : ""}
+      ${s.speeches ? `<button class="btn primary" type="button" data-go="speeches" style="justify-self:center">Open speaker intros and timers</button>` : ""}
+      <div class="sizer"><button class="btn small" type="button" data-size="-1">Smaller text</button><button class="btn small" type="button" data-size="1">Larger text</button></div>`;
+    const prev = STEPS[i - 1], next = STEPS[i + 1];
+    pagerSlot.innerHTML = `<div class="pager">
+      <button class="btn back" type="button" data-step="-1" ${prev ? "" : "disabled"}><span>‹ Back</span><b>${prev ? esc(prev.title) : "Start of the day"}</b></button>
+      <button class="btn primary" type="button" data-step="1" ${next ? "" : "disabled"}><span>Done, next ›</span><b>${next ? esc(next.title) : "That's a wrap"}</b></button></div>`;
+  }
+
+  function speechSecs(id) { const r = store.speech[id] || { acc: 0 }; return r.acc + (r.start ? (Date.now() - r.start) / 1000 : 0); }
+  function totalSpeech() { return SPEAKERS.reduce((a, s) => a + speechSecs(s.id), 0); }
+  function renderSpeeches(fresh) {
+    const tot = totalSpeech();
+    view.innerHTML = `<div><div class="eyebrow">${esc(W.speechesWhen || "")}</div><h1>Speeches</h1>
+      <p class="sub">Start the timer as each speaker reaches the mic. Between speakers, "Thank you" and applause is enough. Let the next one get ready before you introduce them.</p></div>
+      <div class="card"><div class="row" style="justify-content:space-between"><b>Total</b><span class="num" id="totT">${fmtDur(tot)} of the ${fmtDur(SLOT)} slot</span></div>
+        <div class="bar ${tot > SLOT ? "over" : ""}" id="totBar"><i style="width:${Math.min(100, tot / SLOT * 100)}%"></i></div>
+        <div class="row"><button class="btn small" type="button" data-reset-speech>Reset timers</button></div></div>
+      ${SPEAKERS.map((sp, i) => { const r = store.speech[sp.id] || {}; const on = !!r.start; return `
+      <article class="speaker ${on ? "live" : ""}" id="sp-${sp.id}">
+        <div class="top"><span class="n">SPEAKER ${i + 1} OF ${SPEAKERS.length}</span><div class="name">${esc(sp.name)}</div><div class="role">${esc(sp.role)}</div>
+          <span class="timer num" data-timer="${sp.id}">${fmtDur(speechSecs(sp.id))}</span>
+          <button class="btn ${on ? "" : "primary"} small" type="button" data-timer-toggle="${sp.id}">${on ? "Stop" : (r.acc ? "Resume" : "Start")}</button></div>
+        <div class="intro">${sp.intro.map(p => `<p>${esc(p)}</p>`).join("")}</div>
+        ${sp.thanks ? `<p class="cue"><b>After</b>“${esc(sp.thanks)}”</p>` : ""}
+      </article>`; }).join("")}
+      <p class="cue"><b>Then</b>Tell ${esc(W.venueLead)} speeches have finished.</p>`;
+    pagerSlot.innerHTML = "";
+    if (fresh) { const on = SPEAKERS.find(sp => store.speech[sp.id] && store.speech[sp.id].start); if (on) document.getElementById("sp-" + on.id).scrollIntoView({ block: "start" }); }
+  }
+
+  function renderRun() {
+    const n = nowMin(), curStep = STEPS[shownIndex()], cur = curStep.partOf || curStep.id;
+    let curT = -1; SCHEDULE.forEach(s => { if (s.t <= n) curT = s.t; });
+    view.innerHTML = `<div><div class="eyebrow">The whole day</div><h1>Run sheet</h1>
+      <p class="sub">Times are a guide. Readiness cues beat the clock, and the kitchen works to these times, so tell ${esc(W.venueLead)} if things slip. Tap one of your jobs to jump to it.</p></div>
+      <div class="timeline">${SCHEDULE.map(it => {
+        const here = it.job && it.job === cur;
+        const cls = `tl ${it.job ? "mc" : ""} ${here ? "current" : (it.t < curT ? "past" : "")}`;
+        const time = `<span class="t num">${fmt(it.t)}${here ? "<small>You are here</small>" : ""}</span>`;
+        const body = `<span class="body"><span class="title">${it.job ? '<span class="tag">You</span>' : ""}${esc(it.title)}</span></span>`;
+        return it.job ? `<button type="button" class="${cls}" data-jump="${it.job}">${time}${body}</button>` : `<div class="${cls}">${time}${body}</div>`;
+      }).join("")}</div>
+      ${photosHtml()}`;
+    pagerSlot.innerHTML = "";
+  }
+
+  function renderContacts() {
+    view.innerHTML = `<div><div class="eyebrow">${esc(W.contactsNote || "")}</div><h1>Contacts</h1></div>
+      <div class="card" style="gap:0">${CONTACTS.map(c => `<div class="contact ${c.key ? "key" : ""}"><div><div class="r">${esc(c.role)}</div><div class="nm">${esc(c.name)}</div><div class="ph num">${esc(c.phone)}</div></div>
+        <div class="acts"><a class="btn small" href="tel:${c.phone.replace(/\s/g, "")}">Call</a><button class="btn small" type="button" data-copy="${esc(c.phone)}">Copy</button></div></div>`).join("")}</div>`;
+    pagerSlot.innerHTML = "";
+  }
+
+  const pairs = (list) => list.map(([a, b]) => `<p style="margin:0"><b>${esc(a)}</b> ${esc(b)}</p>`).join("");
+  function renderInfo() {
+    const theme = store.theme || "system";
+    const d = nowDate(), rehM = d.getHours() * 60 + d.getMinutes();
+    const I = W.info;
+    view.innerHTML = `<div><div class="eyebrow">${esc(W.couple.a)} &amp; ${esc(W.couple.b)} · ${esc(W.venue)}</div><h1>Info</h1></div>
+      <div class="grid2">
+        <div class="card"><h3>Your jobs from the venue</h3>${pairs(I.venueJobs)}</div>
+        <div class="card"><h3>Spare lines</h3>${pairs(I.spareLines)}</div>
+      </div>
+      <div class="card"><h3>House rules, quick reference</h3><ul class="rules">
+        ${I.houseRules.map(([a, b]) => `<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join("")}</ul></div>
+      ${I.pronunciations.length ? `<div><h2 style="margin-bottom:12px">Say it right</h2><div class="pron">
+        ${I.pronunciations.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")}</div></div>` : ""}
+      ${I.toConfirm.length ? `<div class="card"><h3>Still to confirm</h3>${I.toConfirm.map(x => `<p style="margin:0">${esc(x)}</p>`).join("")}</div>` : ""}
+      <div class="card"><h3>Notes</h3><textarea id="notes" placeholder="Anything the venue, DJ or couple tell you on the day">${esc(store.notes)}</textarea><p class="sub" style="font-size:.85rem">Saved on this device only.</p></div>
+      <div class="grid2">
+        <div class="card"><h3>Display</h3>
+          <div class="toggle"><span>Theme</span><div class="seg" role="group" aria-label="Theme">${["light","system","dark"].map(t => `<button type="button" data-theme-set="${t}" aria-pressed="${theme === t}">${t[0].toUpperCase() + t.slice(1)}</button>`).join("")}</div></div>
+          <p class="sub" style="font-size:.85rem">Dark is easier to read in a dim reception room.</p></div>
+        <div class="card"><h3>Rehearsal clock</h3><p class="sub">Pretend it's another time to walk through the day. Moving the slider also moves Now to that point. Turns off when you reload.</p>
+          <label for="reh" class="num" id="rehLbl">${offsetMs ? fmt(rehM) : "Off, using real time"}</label>
+          <input type="range" id="reh" min="${STEPS[0].t - 30}" max="${STEPS[STEPS.length - 1].t + 60}" step="5" value="${offsetMs ? rehM : STEPS[0].t - 30}">
+          <div class="row"><button class="btn small" type="button" data-reh-off>Use real time</button><button class="btn small" type="button" data-restart>Back to the first job</button></div></div>
+      </div>`;
+    pagerSlot.innerHTML = "";
+    const notes = document.getElementById("notes");
+    notes.addEventListener("input", () => { store.notes = notes.value; save(); });
+    const reh = document.getElementById("reh");
+    reh.addEventListener("input", () => {
+      const target = new Date(); target.setHours(0, +reh.value, 0, 0);
+      offsetMs = target - Date.now(); setPos(liveIndex());
+      document.getElementById("rehLbl").textContent = fmt(+reh.value); tick();
+    });
+  }
+
+  const RENDER = { now: renderNow, speeches: renderSpeeches, run: renderRun, contacts: renderContacts, info: renderInfo };
+  function render(fresh) {
+    tabsEl.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-current", b.dataset.tab === tab ? "page" : "false"));
+    if (fresh) main.scrollTop = 0;
+    RENDER[tab](fresh);
+    tick();
+  }
+
+  // ---------- status strip ----------
+  function tick() {
+    const d = nowDate(), n = nowMin();
+    document.getElementById("clock").firstChild.nodeValue = (d.getHours() % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0");
+    document.getElementById("ampm").textContent = d.getHours() >= 12 ? "pm" : "am";
+    const nx = STEPS[shownIndex() + 1];
+    let nv = "End of the night";
+    if (nx) {
+      const left = nx.t - n;
+      nv = esc(nx.title) + " · " + (nx.flex ? '<span class="cd">when ready</span>' : left > 0 ? `<span class="cd num">${fmt(nx.t)}, in ${fmtDur(left * 60)}</span>` : `<span class="num">${fmt(nx.t)}</span>`);
+    }
+    document.getElementById("nextVal").innerHTML = nv;
+    const tr = tracking(), pill = document.getElementById("track");
+    pill.className = "pill num " + (tr.state === "late" ? "late" : tr.state === "ok" ? "" : "idle");
+    pill.textContent = tr.state === "late" ? tr.mins + " min behind" : tr.state === "before" ? "Starts " + fmt(STEPS[0].t) : tr.state === "end" ? "Last job" : tr.state === "idle" ? "Not timing" : "On track";
+    document.getElementById("rehFlag").hidden = !offsetMs;
+    const hs = document.getElementById("hintSlot");
+    if (hs && tab === "now") {
+      const live = liveIndex(), want = tr.state === "late" ? `<div class="hint"><span>${tr.mins} min behind. ${esc(tr.next.title)} was scheduled for ${fmt(tr.next.t)}. If it's more than a few minutes, give ${esc(W.venueLead)} a heads-up.</span>${live > shownIndex() + 1 ? `<button class="btn small" type="button" data-jump="${STEPS[live].id}">Skip to ${esc(STEPS[live].title)}</button>` : ""}</div>` : "";
+      if (hs.dataset.v !== want) { hs.innerHTML = want; hs.dataset.v = want; }
+    }
+    if (tab === "speeches") {
+      view.querySelectorAll("[data-timer]").forEach(el => el.textContent = fmtDur(speechSecs(el.dataset.timer)));
+      const tot = totalSpeech(), tt = document.getElementById("totT"), tb = document.getElementById("totBar");
+      if (tt) { tt.textContent = fmtDur(tot) + " of the " + fmtDur(SLOT) + " slot"; tb.classList.toggle("over", tot > SLOT); tb.firstElementChild.style.width = Math.min(100, tot / SLOT * 100) + "%"; }
+    }
+  }
+
+  // ---------- interactions ----------
+  let toastT;
+  function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 1800); }
+
+  main.addEventListener("click", e => {
+    const b = e.target.closest("button, a"); if (!b) return;
+    const ds = b.dataset;
+    if (ds.step) { setPos(shownIndex() + +ds.step); main.scrollTop = 0; renderNow(); tick(); return; }
+    if (ds.jump) { const i = STEPS.findIndex(s => s.id === ds.jump); if (i >= 0) setPos(i); tab = "now"; store.tab = "now"; save(); render(true); return; }
+    if (ds.go) return go(ds.go);
+    if (ds.size) { store.size = Math.min(3, Math.max(1.2, store.size + 0.2 * +ds.size)); applySize(); save(); return; }
+    if (ds.timerToggle) {
+      const id = ds.timerToggle, r = store.speech[id] = store.speech[id] || { acc: 0 };
+      if (r.start) { r.acc += (Date.now() - r.start) / 1000; r.start = null; }
+      else { SPEAKERS.forEach(sp => { const o = store.speech[sp.id]; if (o && o.start) { o.acc += (Date.now() - o.start) / 1000; o.start = null; } }); r.start = Date.now(); }
+      save(); const y = main.scrollTop; renderSpeeches(false); main.scrollTop = y; return;
+    }
+    if ("resetSpeech" in ds) { if (b.dataset.armed) { store.speech = {}; save(); toast("Timers reset"); return render(false); } b.dataset.armed = "1"; b.textContent = "Tap again to reset"; return; }
+    if (ds.photo !== undefined || ds.pmove !== undefined || ds.pdown !== undefined) {
+      const a = store.photos;
+      if (ds.photo !== undefined) { const p = a[+ds.photo]; p.done = !p.done; }
+      if (ds.pmove !== undefined) { const i = +ds.pmove; if (i > 0) [a[i - 1], a[i]] = [a[i], a[i - 1]]; }
+      if (ds.pdown !== undefined) { const i = +ds.pdown; if (i < a.length - 1) [a[i + 1], a[i]] = [a[i], a[i + 1]]; }
+      save(); const y = main.scrollTop; RENDER[tab](false); main.scrollTop = y; return;
+    }
+    if (ds.copy) { const txt = ds.copy; try { navigator.clipboard.writeText(txt).then(() => toast("Copied " + txt), () => selectNum(b)); } catch (err) { selectNum(b); } return; }
+    if (ds.themeSet) { store.theme = ds.themeSet; applyTheme(); save(); return renderInfo(); }
+    if ("restart" in ds) { setPos(0); toast("Back at the first job"); tick(); return; }
+    if ("rehOff" in ds) { offsetMs = 0; renderInfo(); tick(); return; }
+  });
+  function selectNum(b) { const ph = b.closest(".contact").querySelector(".ph"); const r = document.createRange(); r.selectNodeContents(ph); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Number selected"); }
+  view.addEventListener("input", e => {
+    const el = e.target; if (el.dataset.pnote === undefined) return;
+    store.photos[+el.dataset.pnote].note = el.value; save();
+  });
+  view.addEventListener("submit", e => {
+    if (e.target.id !== "addPhoto") return; e.preventDefault();
+    const v = document.getElementById("newPhoto").value.trim(); if (!v) return;
+    store.photos.push({ t: v, note: "", done: false }); save();
+    const y = main.scrollTop; RENDER[tab](false); main.scrollTop = y;
+    const again = document.getElementById("newPhoto"); if (again) again.focus();
+  });
+
+  function applySize() { document.documentElement.style.setProperty("--say-size", store.size + "rem"); }
+  function applyTheme() { const t = store.theme; if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); }
+
+  async function wake() { try { if ("wakeLock" in navigator && document.visibilityState === "visible") await navigator.wakeLock.request("screen"); } catch (e) {} }
+  document.addEventListener("visibilitychange", wake);
+  document.addEventListener("click", wake, { once: true });
+
+  applyTheme(); applySize(); render(true);
+  setInterval(tick, 1000);
+  wake();
+})();
+</script>
+</body>
+</html>
