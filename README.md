@@ -4,6 +4,8 @@ A single-page app that turns your MC notes into an iPad teleprompter for the nig
 
 I built it to MC a friend's wedding and it made the night much easier, so here it is for anyone else who's been handed the microphone. Everything in this repo is example content for a made-up couple, Sam and Alex. Swap in your own.
 
+**Try the demo:** https://adam1194.github.io/wedding-mc-app/
+
 <p align="center">
   <img src="docs/now.png" width="32%" alt="Now screen showing the couple's entrance script">
   <img src="docs/speeches.png" width="32%" alt="Speeches screen with speaker intros and timers">
